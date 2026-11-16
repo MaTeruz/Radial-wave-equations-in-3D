@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 # from sympy.physics.quantum.constants import hbar
 # import pyvista as pv
 # import plotly.graph_objects as go
@@ -77,22 +78,64 @@ def plot_all_probabilities(r, probabilities, filename):
 
     save_plot(filename)
     plt.close()
+    
 
+def plot_density_subplots(X, Z, densities, n, filename):
 
-def plot_density_2d(X, Z, density, filename):
-    plt.figure()
+    # Antal orbitaler for det givne n
+    orbitals = list(densities.keys())
 
-    plt.imshow(
-        density,
-        origin="lower",
-        extent=[X.min(), X.max(), Z.min(), Z.max()]
+    num_orbitals = len(orbitals)
+
+    # Find antal rækker og kolonner
+    cols = int(np.ceil(np.sqrt(num_orbitals)))
+    rows = int(np.ceil(num_orbitals / cols))
+
+    fig, axes = plt.subplots(
+        rows,
+        cols,
+        figsize=(5 * cols, 5 * rows),
+        constrained_layout=True
     )
 
-    plt.colorbar(label=r"$|\psi|^2$")
+    # Sørg for at axes altid er et array
+    axes = np.array(axes).flatten()
+
+    for ax, (l, m) in zip(axes, orbitals):
+
+        density = densities[(l, m)]
+
+        # Normalisering
+        density = density / np.max(density)
+
+        im = ax.imshow(
+            density,
+            origin="lower",
+            extent=[X.min(), X.max(), Z.min(), Z.max()],
+            cmap="cividis",
+            aspect="equal"
+        )
+
+        ax.set_title(f"$n={n}, l={l}, m={m}$")
+        ax.set_xlabel("$x$")
+        ax.set_ylabel("$z$")
+
+    # Fjern overskydende subplots
+    for ax in axes[num_orbitals:]:
+        ax.remove()
+
+    # Colorbar
+    fig.colorbar(
+        im,
+        ax=fig.axes,
+        label=r"$|\psi_{nlm}|^2$",
+        shrink=0.8
+    )
+
+    fig.suptitle(f"Hydrogen orbital densities: n={n}", fontsize=16)
 
     save_plot(filename)
-    plt.close()
-
+    plt.close(fig)
 
 def plot_density_3d(X, Y, Z, density):
     pass
