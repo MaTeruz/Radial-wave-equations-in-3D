@@ -9,7 +9,7 @@ import numpy as np
 def save_plot(filename):
 
     plt.savefig(
-        f"Radial-wave-equations-in-3D-main\Radial-wave-equations-in-3D-main\graphs/{filename}.png",
+        f"Radial-wave-equations-in-3D\graphs/{filename}.png",
         dpi=300,
         bbox_inches="tight"
     )
