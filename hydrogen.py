@@ -61,6 +61,6 @@ def psi(n, l, m, r, theta, phi):
 
     R = radial_wavefunction(n, l, r)
 
-    Y = sph_harm_y(m, l, phi, theta)
+    Y = sph_harm_y(l, m, theta, phi)
 
     return R * Y
