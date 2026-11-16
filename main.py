@@ -19,7 +19,7 @@ from hydrogen import (
 from plot import (
     plot_all_radial_functions,
     plot_all_probabilities,
-    plot_density_2d
+    plot_density_subplots
 
 )
 
@@ -62,17 +62,13 @@ z = np.linspace(-20,20,500)
 
 X, Z = np.meshgrid(x,z)
 
-r = np.sqrt(X**2 + Z**2)
+r_grid = np.sqrt(X**2 + Z**2)
 
 theta = np.arccos(
-    np.where(r==0, 1, Z/r)
+    np.where(r_grid == 0, 1, Z/r_grid)
 )
 
-phi = np.zeros_like(r)
-
-Psi = psi(n,l,0,r,theta,phi)
-
-density = np.abs(Psi)**2
+phi = np.where(X >= 0, 0, np.pi)
 
 def compute_density(n, l, m, r, theta, phi):
 
@@ -85,21 +81,41 @@ def compute_density(n, l, m, r, theta, phi):
         phi
     )
 
-    return np.abs(Psi)**2
+    density = np.abs(Psi)**2
 
-for n in range(1,5):
+    print(f"n={n}, l={l}, m={m}")
+    print("max =", np.max(density))
+    print("min =", np.min(density))
+
+    return density
+
+
+for n in range(1, 5):
+
+    densities = {}
 
     for l in range(n):
 
-        density = compute_density(
-            n,
-            l,
-            0
-        )
+        for m in range(-l, l+1):
 
-        plot_density_2d(
-            X,
-            Z,
-            density,
-            f"density2D_n{n}_l{l}"
-        )
+            density = compute_density(
+                n,
+                l,
+                m,
+                r_grid,
+                theta,
+                phi
+            )
+
+            print("max:", np.max(density))
+            print("min:", np.min(density))
+
+            densities[(l, m)] = density
+
+    plot_density_subplots(
+        X,
+        Z,
+        densities,
+        n,
+        f"density_n{n}"
+    )
