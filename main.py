@@ -107,8 +107,8 @@ for n in range(1, 5):
                 phi
             )
 
-            print("max:", np.max(density))
-            print("min:", np.min(density))
+            # print("max:", np.max(density))
+            # print("min:", np.min(density))
 
             densities[(l, m)] = density
 

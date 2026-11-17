@@ -112,7 +112,7 @@ def plot_density_subplots(X, Z, densities, n, filename):
             density,
             origin="lower",
             extent=[X.min(), X.max(), Z.min(), Z.max()],
-            cmap="cividis",
+            cmap="cividis", # inferno, cividis
             aspect="equal"
         )
 
