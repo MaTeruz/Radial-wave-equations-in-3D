@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import os
 import numpy as np
+from matplotlib.colors import PowerNorm
+from skimage.measure import marching_cubes
 # from sympy.physics.quantum.constants import hbar
 # import pyvista as pv
 # import plotly.graph_objects as go
@@ -112,7 +114,8 @@ def plot_density_subplots(X, Z, densities, n, filename):
             density,
             origin="lower",
             extent=[X.min(), X.max(), Z.min(), Z.max()],
-            cmap="cividis", # inferno, cividis
+            cmap="viridis", # inferno, cividis, viridis
+            norm=PowerNorm(gamma=0.4), # prøver at gøre plots tydeligere, og lettere at se..
             aspect="equal"
         )
 
@@ -137,5 +140,3 @@ def plot_density_subplots(X, Z, densities, n, filename):
     save_plot(filename)
     plt.close(fig)
 
-def plot_density_3d(X, Y, Z, density):
-    pass
