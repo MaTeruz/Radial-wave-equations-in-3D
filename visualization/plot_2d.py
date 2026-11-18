@@ -1,12 +1,23 @@
 import matplotlib.pyplot as plt
 import os
 import numpy as np
+from matplotlib import cm
 from matplotlib.colors import PowerNorm
 from skimage.measure import marching_cubes
 # from sympy.physics.quantum.constants import hbar
 # import pyvista as pv
 # import plotly.graph_objects as go
 
+# Shared visualization settings
+CMAP = cm.viridis
+
+LEVELS = [0.05, 0.15, 0.30, 0.50, 0.75]
+
+NORM = PowerNorm(
+    gamma=0.4,
+    vmin=0,
+    vmax=1
+)
 
 def save_plot(filename):
 
@@ -15,6 +26,17 @@ def save_plot(filename):
         dpi=300,
         bbox_inches="tight"
     )
+
+def get_plot_limits(n):
+
+    limits = {
+        1: 8,
+        2: 15,
+        3: 22,
+        4: 30
+    }
+
+    return limits[n]
 
 # 
 def plot_radial_function(r, R, filename):
@@ -82,14 +104,12 @@ def plot_all_probabilities(r, probabilities, filename):
     plt.close()
     
 
-def plot_density_subplots(X, Z, densities, n, filename):
+def plot_density_subplots(X, Z, densities, n, filename, limits=30):
 
-    # Antal orbitaler for det givne n
     orbitals = list(densities.keys())
 
     num_orbitals = len(orbitals)
 
-    # Find antal rækker og kolonner
     cols = int(np.ceil(np.sqrt(num_orbitals)))
     rows = int(np.ceil(num_orbitals / cols))
 
@@ -100,34 +120,50 @@ def plot_density_subplots(X, Z, densities, n, filename):
         constrained_layout=True
     )
 
-    # Sørg for at axes altid er et array
     axes = np.array(axes).flatten()
 
     for ax, (l, m) in zip(axes, orbitals):
 
         density = densities[(l, m)]
 
-        # Normalisering
+        # Normalize density
         density = density / np.max(density)
 
+        # Plot probability density
         im = ax.imshow(
             density,
             origin="lower",
             extent=[X.min(), X.max(), Z.min(), Z.max()],
-            cmap="viridis", # inferno, cividis, viridis
-            norm=PowerNorm(gamma=0.4), # prøver at gøre plots tydeligere, og lettere at se..
+            cmap=CMAP,
+            norm=NORM,
             aspect="equal"
+        )
+
+        # Add contour lines
+        ax.contour(
+            X,
+            Z,
+            density,
+            levels=LEVELS,
+            colors=[
+                CMAP(NORM(level))
+                for level in LEVELS
+            ],
+            linewidths=1.2
         )
 
         ax.set_title(f"$n={n}, l={l}, m={m}$")
         ax.set_xlabel("$x$")
         ax.set_ylabel("$z$")
 
-    # Fjern overskydende subplots
+        limits = get_plot_limits(n)
+
+        ax.set_xlim(-limits, limits)
+        ax.set_ylim(-limits, limits)
+
     for ax in axes[num_orbitals:]:
         ax.remove()
 
-    # Colorbar
     fig.colorbar(
         im,
         ax=fig.axes,

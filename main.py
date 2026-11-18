@@ -185,7 +185,6 @@ def main():
             z,
             densities,
             n,
-            threshold=0.15,
             filename=f"isosurface_n{n}"
         )
 
