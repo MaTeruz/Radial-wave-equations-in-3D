@@ -143,7 +143,6 @@ def main():
 
 
     # 3D density grid
-
     x = np.linspace(-30, 30, 100)
     y = np.linspace(-30, 30, 100)
     z = np.linspace(-30, 30, 100)

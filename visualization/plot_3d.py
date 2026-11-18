@@ -78,6 +78,10 @@ def plot_isosurface_3d(x, y, z, densities, n, threshold=0.15, filename="isosurfa
         ax.set_ylabel("$y$")
         ax.set_zlabel("$z$")
 
+        ax.set_xlim(-30, 30)
+        ax.set_ylim(-30, 30)
+        ax.set_zlim(-30, 30)
+
         ax.set_box_aspect((1, 1, 1))
 
     fig.suptitle(
@@ -85,7 +89,7 @@ def plot_isosurface_3d(x, y, z, densities, n, threshold=0.15, filename="isosurfa
         fontsize=16
     )
 
-    plt.tight_layout()
+    # plt.tight_layout()
 
     save_plot(filename)
     plt.close(fig)
